@@ -20,10 +20,6 @@ import com.itincup.msp.repository.MedicineRepository;
 @RequestMapping(value = "/medicine-inventory", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class MedicalStoreController {
 	
-	/*jhkjhkjh
-	 * @GetMapping("/name") public String getMedicalStoreName() { return
-	 * "Apna Medical Store"; }
-	 */
 	@Autowired
 	private MedicineRepository repository;	
  
@@ -45,14 +41,14 @@ public class MedicalStoreController {
     @PutMapping("/medicine/{id}")
     Medicine updateMedicine(@RequestBody Medicine newMedicine, @PathVariable Long id) {
  
-        return repository.findById(id).map(employee -> {
-        	employee.setId(newMedicine.getId());
-        	employee.setMedicine_name(newMedicine.getMedicine_name());
-            employee.setQuantity(newMedicine.getQuantity());
-            employee.setPrice(newMedicine.getPrice());
-            employee.setSell_med_qantity(newMedicine.getSell_med_qantity());
-            employee.setAvail_med_quantity(newMedicine.getAvail_med_quantity());
-            return repository.save(employee);
+        return repository.findById(id).map(medicine -> {
+        	medicine.setId(newMedicine.getId());
+        	medicine.setMedicine_name(newMedicine.getMedicine_name());
+        	medicine.setQuantity(newMedicine.getQuantity());
+        	medicine.setPrice(newMedicine.getPrice());
+        	medicine.setSell_med_qantity(newMedicine.getSell_med_qantity());
+        	medicine.setAvail_med_quantity(newMedicine.getAvail_med_quantity());
+            return repository.save(medicine);
         }).orElseGet(() -> {
         	newMedicine.setId(id);
             return repository.save(newMedicine);
