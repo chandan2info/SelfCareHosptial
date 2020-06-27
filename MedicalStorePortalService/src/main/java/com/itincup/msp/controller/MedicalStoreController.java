@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.itincup.msp.entity.Medicine;
 import com.itincup.msp.repository.MedicineRepository;
+import com.itincup.msp.service.IMedicineStore;
 
 import javassist.tools.web.BadHttpRequest;
 
@@ -31,6 +32,9 @@ public class MedicalStoreController {
 
 	@Autowired
 	private MedicineRepository repository;
+	
+	@Autowired
+	private IMedicineStore iMedicine;
 
 	
 	@GetMapping("/medicine")
@@ -57,7 +61,7 @@ public class MedicalStoreController {
 		ResponseEntity<Medicine> entityResponse;
 		Medicine medicine = null;
 		try {
-			medicine = repository.save(newMedicine);
+			medicine = iMedicine.saveMedicine(newMedicine);
 			entityResponse = new ResponseEntity<>(medicine, HttpStatus.CREATED);
 		} catch (Exception e) {
 			entityResponse = new ResponseEntity<>(medicine, HttpStatus.EXPECTATION_FAILED);

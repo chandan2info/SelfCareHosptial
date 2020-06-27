@@ -1,6 +1,5 @@
 package com.itincup.msp.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +9,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "MEDICINE_INVENTORY")
 public class Medicine {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
