@@ -9,11 +9,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "MEDICINE_INVENTORY")
 public class Medicine {
-	
-	@Id
+
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Id
 	private String medicineName;
 
 	private Integer quantity;
