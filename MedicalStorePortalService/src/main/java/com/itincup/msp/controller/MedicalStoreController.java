@@ -3,6 +3,8 @@ package com.itincup.msp.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,7 +38,6 @@ public class MedicalStoreController {
 		ResponseEntity<List<Medicine>> entityResponse;
 		try {
 			response = repository.findAll();
-
 			if (response == null || response.isEmpty()) {
 				entityResponse = new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
 			} else {
@@ -49,8 +50,7 @@ public class MedicalStoreController {
 	}
 
 	@PostMapping("/medicine")
-	ResponseEntity<Medicine> createOrSaveMedicine(@RequestBody Medicine newMedicine) {
-
+	ResponseEntity<Medicine> saveMedicine(@RequestBody Medicine newMedicine) {
 		ResponseEntity<Medicine> entityResponse;
 		Medicine medicine = null;
 		try {
@@ -64,14 +64,11 @@ public class MedicalStoreController {
 
 	@GetMapping("/medicine/{medicineName}")
 	public ResponseEntity<Medicine> getMedicineByName(@PathVariable("medicineName") String medicineName) {
-
 		ResponseEntity<Medicine> entityResponse;
 		Optional<Medicine> medicineResponse = null;
 		try {
 			medicineResponse = repository.findByMedicineName(medicineName);
-
 			if (medicineResponse.isPresent()) {
-
 				entityResponse = new ResponseEntity<>(medicineResponse.get(), HttpStatus.OK);
 			} else {
 				entityResponse = new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -83,21 +80,17 @@ public class MedicalStoreController {
 	}
 
 	@PutMapping("/medicine/{medicineName}")
-	public ResponseEntity<Medicine> updateTutorial(@PathVariable("medicineName") String medicineName,
+	public ResponseEntity<Medicine> updateMedicine(@PathVariable("medicineName") String medicineName,
 			@RequestBody Medicine newMedicine) {
-
 		ResponseEntity<Medicine> entityResponse;
 		Optional<Medicine> medicineResponse = repository.findByMedicineName(medicineName);
-
 		if (medicineResponse.isPresent()) {
-
 			Medicine medicine = medicineResponse.get();
-			medicine.setMedicineName(medicine.getMedicineName());
-			/*
-			 * if(newMedicine.getMedicineName()==null) {
-			 * medicine.setMedicineName(medicine.getMedicineName()); }else {
-			 * medicine.setMedicineName(newMedicine.getMedicineName()); }
-			 */
+			if (newMedicine.getMedicineName() == null) {
+				medicine.setMedicineName(medicine.getMedicineName());
+			} else {
+				medicine.setMedicineName(newMedicine.getMedicineName());
+			}
 			if (newMedicine.getQuantity() == null) {
 				medicine.setQuantity(medicine.getQuantity());
 			} else {
@@ -126,6 +119,7 @@ public class MedicalStoreController {
 		return entityResponse;
 	}
 
+	@Transactional
 	@DeleteMapping("/medicine/{medicineName}")
 	public ResponseEntity<HttpStatus> deleteMedicine(@PathVariable("medicineName") String medicineName) {
 		try {

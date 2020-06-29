@@ -9,11 +9,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "MEDICINE_INVENTORY")
 public class Medicine {
-
+	
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Id
 	private String medicineName;
 
 	private Integer quantity;
@@ -25,7 +25,7 @@ public class Medicine {
 	private Integer avail_med_quantity;
 
 	public Medicine() {
-
+		//no-args constructor
 	}
 
 	public Medicine(String medicineName, Integer quantity, Double price, Integer sell_med_qantity,

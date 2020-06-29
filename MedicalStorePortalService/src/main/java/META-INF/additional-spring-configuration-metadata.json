@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "sql.query.script.location",
+  "type": "java.lang.String",
+  "description": "A description for 'sql.query.script.location'"
+}]}
