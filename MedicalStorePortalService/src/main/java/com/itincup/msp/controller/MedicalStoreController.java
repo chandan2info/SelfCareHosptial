@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itincup.msp.entity.Medicine;
 import com.itincup.msp.repository.MedicineRepository;
 import com.itincup.msp.service.IMedicineStore;
 
+@CrossOrigin(origins = "https://selfcare-hospital-management-system.cfapps.io/", methods = {RequestMethod.DELETE, RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 @RestController
 @RequestMapping(value = "/medicine-inventory", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class MedicalStoreController {
@@ -59,7 +61,6 @@ public class MedicalStoreController {
 		return iMedicine.updateMedicine(medicineName, newMedicine);
 	}
 
-	@CrossOrigin(origins = "http://localhost:4200")
 	@Transactional
 	@DeleteMapping("/medicine/{medicineName}")
 	public ResponseEntity<HttpStatus> deleteMedicine(@PathVariable("medicineName") String medicineName) {
