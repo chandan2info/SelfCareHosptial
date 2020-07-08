@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.itincup.msp.controller.MedicalStoreController;
 import com.itincup.msp.entity.Medicine;
 import com.itincup.msp.repository.MedicineRepository;
 import com.itincup.msp.service.IMedicineStore;
@@ -24,6 +27,8 @@ import com.itincup.msp.service.IMedicineStore;
 @Service
 public class MedicineStoreServiceImpl implements IMedicineStore{
 
+	private static final Logger LOGGER = LogManager.getLogger(MedicineStoreServiceImpl.class);
+	
 	private String fileLocation="E:/insertQueryScript.txt";
 	private String fileLoc = "src/main/resources/data.sql";
 	
@@ -32,36 +37,45 @@ public class MedicineStoreServiceImpl implements IMedicineStore{
 	
 	@Override
 	public Medicine saveMedicine(Medicine medicine) {
+		LOGGER.info("inside MedicineStoreServiceImpl : saveMedicine()");
 		buildInsertSqlQueryScript(medicine);
 		return repository.save(medicine);
 	}
 	
 	public ResponseEntity<List<Medicine>> getAllMedicine() {
+		LOGGER.info("inside MedicineStoreServiceImpl : getAllMedicine()");
 		List<Medicine> response = null;
 		ResponseEntity<List<Medicine>> entityResponse;
 		try {
 			response = repository.findAll();
 			if (response == null || response.isEmpty()) {
+				LOGGER.info("RESPONSE : inside MedicineStoreServiceImpl : getAllMedicine() - "+response);
 				entityResponse = new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
 			} else {
+				LOGGER.info("RESPONSE : inside MedicineStoreServiceImpl : getAllMedicine() - "+ response);
 				entityResponse = new ResponseEntity<>(response, HttpStatus.OK);
 			}
 		} catch (Exception e) {
+			LOGGER.error("EROR : inside MedicineStoreServiceImpl : getAllMedicine() - "+ e);
 			entityResponse = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return entityResponse;
 	}
 	public ResponseEntity<Medicine> getMedicineByName(@PathVariable("medicineName") String medicineName) {
+		LOGGER.info("inside MedicineStoreServiceImpl : getMedicineByName()");
 		ResponseEntity<Medicine> entityResponse;
 		Optional<Medicine> medicineResponse = null;
 		try {
 			medicineResponse = repository.findByMedicineName(medicineName);
 			if (medicineResponse.isPresent()) {
+				LOGGER.info("RESPONSE : inside MedicineStoreServiceImpl : getMedicineByName() - "+ medicineResponse);
 				entityResponse = new ResponseEntity<>(medicineResponse.get(), HttpStatus.OK);
 			} else {
+				LOGGER.info("RESPONSE : inside MedicineStoreServiceImpl : getMedicineByName() - ", medicineResponse);
 				entityResponse = new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 		} catch (Exception e) {
+			LOGGER.error("ERROR : inside MedicineStoreServiceImpl : getMedicineByName()"+ e);
 			entityResponse = new ResponseEntity<>(medicineResponse.get(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return entityResponse;
@@ -69,6 +83,7 @@ public class MedicineStoreServiceImpl implements IMedicineStore{
 
 	public ResponseEntity<Medicine> updateMedicine(@PathVariable("medicineName") String medicineName,
 			@RequestBody Medicine newMedicine) {
+		LOGGER.error("inside MedicineStoreServiceImpl : updateMedicine()");
 		ResponseEntity<Medicine> entityResponse;
 		Optional<Medicine> medicineResponse = repository.findByMedicineName(medicineName);
 		if (medicineResponse.isPresent()) {
@@ -103,14 +118,17 @@ public class MedicineStoreServiceImpl implements IMedicineStore{
 		} else {
 			entityResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		LOGGER.info("RESPONSE : inside MedicineStoreServiceImpl : updateMedicine() - "+ entityResponse);
 		return entityResponse;
 	}
 	
 	public ResponseEntity<HttpStatus> deleteMedicine(@PathVariable("medicineName") String medicineName) {
+		LOGGER.error("inside MedicineStoreServiceImpl : deleteMedicine()");
 		try {
 			repository.deleteByMedicineName(medicineName);
 			return new ResponseEntity<>(HttpStatus.MOVED_PERMANENTLY);
 		} catch (Exception e) {
+			LOGGER.error("ERROR : inside MedicineStoreServiceImpl : deleteMedicine() "+ e);
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 	}
